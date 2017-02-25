@@ -2,9 +2,23 @@
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
+let passport = require('passport');
+
+// define the user model
+let UserModel = require('../models/users');
+let User = UserModel.User; // alias for User
+
 
 // define the book model
 let book = require('../models/books');
+
+function requireAuth(req, res, next) {
+  // check if the user is logged index
+  if(!req.isAuthenticated()) {
+    return res.redirect('/login');
+  }
+  next();
+}
 
 /* GET books List page. READ */
 router.get('/', (req, res, next) => {
