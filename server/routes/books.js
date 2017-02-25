@@ -1,7 +1,7 @@
 /*Student Name: Hubert Osifo
   Student ID: 300791555
   Class: COMP308-W2017
-  APP: Books List
+  APP: Book List
   Midterm 1
   */
   

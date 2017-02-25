@@ -1,3 +1,11 @@
+/*Student Name: Hubert Osifo
+  Student ID: 300791555
+  Class: COMP308-W2017
+  APP: Book List
+  Midterm 
+  */
+
+
 // require these modules for our user model
 let mongoose = require("mongoose");
 let Schema = mongoose.Schema;

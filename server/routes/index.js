@@ -1,3 +1,10 @@
+/*Student Name: Hubert Osifo
+  Student ID: 300791555
+  Class: COMP308-W2017
+  APP: Books List
+  Midterm 1
+  */
+
 // modules required for routing
 let express = require('express');
 let router = express.Router();
