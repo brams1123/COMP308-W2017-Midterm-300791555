@@ -1,3 +1,10 @@
+/*Student Name: Hubert Osifo
+  Student ID: 300791555
+  Class: COMP308-W2017
+  APP: Books List
+  Midterm 1
+  */
+  
 // modules required for routing
 let express = require('express');
 let router = express.Router();
@@ -17,7 +24,6 @@ router.get('/', (req, res, next) => {
       res.render('books/index', {
         title: 'Books',
         books: books
-        
       });
     }
   });
@@ -26,7 +32,8 @@ router.get('/', (req, res, next) => {
 
 //  GET the Book Details page in order to add a new Book
 router.get('/add', (req, res, next) => {
-    res.render('books/details', {
+
+   res.render('books/details', {
     title: "Add a new Book",
     books: ''
   });
@@ -35,8 +42,7 @@ router.get('/add', (req, res, next) => {
 
 // POST process the Book Details page and create a new Book - CREATE
 router.post('/add', (req, res, next) => {
-
-     let newBook = book({
+ let newBook = book({
     "Title": req.body.title,
     "Price": req.body.price,
     "Author": req.body.author,
@@ -69,7 +75,8 @@ try {
           // show the book details view
           res.render('books/details', {
               title: 'Book Details',
-              books: books
+              books: books,
+              
           });
         }
       });
@@ -82,7 +89,7 @@ try {
 // POST - process the information passed from the details form and update the document
 router.post('/:id', (req, res, next) => {
 
-    let id = req.params.id;
+      let id = req.params.id;
 
      let updatedBook = book({
        "_id": id,
@@ -107,7 +114,7 @@ router.post('/:id', (req, res, next) => {
 // GET - process the delete by user id
 router.get('/delete/:id', (req, res, next) => {
 
-    let id = req.params.id;
+     let id = req.params.id;
 
     book.remove({_id: id}, (err) => {
       if(err) {
