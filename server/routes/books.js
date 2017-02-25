@@ -2,39 +2,53 @@
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
+let passport = require('passport');
 
-// define the book model
-let book = require('../models/books');
+// define the user model
+let UserModel = require('../models/users');
+let User = UserModel.User; // alias for User
 
-/* GET books List page. READ */
-router.get('/', (req, res, next) => {
-  // find all books in the books collection
-  book.find( (err, books) => {
+// game object created from the Schema / model
+let game = require('../models/books');
+
+// function to check if the user is authenticated
+function requireAuth(req, res, next) {
+  // check if the user is logged index
+  if(!req.isAuthenticated()) {
+    return res.redirect('/login');
+  }
+  next();
+}
+
+/* GET games List page. READ */
+router.get('/', requireAuth, (req, res, next) => {
+  // find all games in the games collection
+  game.find( (err, books) => {
     if (err) {
       return console.error(err);
     }
     else {
-      res.render('books/index', {
+      res.render('games/index', {
         title: 'Books',
-        books: books
+        books: books,
+        displayName: req.user ? req.user.displayName : ''
       });
     }
   });
 
 });
 
-//  GET the Book Details page in order to add a new Book
-router.get('/add', (req, res, next) => {
-
-    res.render('books/details', {
+//  GET the Game Details page in order to add a new Game
+router.get('/add', requireAuth, (req, res, next) => {
+  res.render('books/details', {
     title: "Add a new Book",
-    books: ''
+    games: '',
+    displayName: req.user ? req.user.displayName : ''
   });
-
 });
 
-// POST process the Book Details page and create a new Book - CREATE
-router.post('/add', (req, res, next) => {
+// POST process the Game Details page and create a new Game - CREATE
+router.post('/add', requireAuth, (req, res, next) => {
 
      let newBook = book({
     "Title": req.body.title,
@@ -43,7 +57,7 @@ router.post('/add', (req, res, next) => {
     "Genre": req.body.genre
     });
 
-    book.create(newBook, (err, book) => {
+    book.create(newGame, (err, game) => {
       if(err) {
         console.log(err);
         res.end(err);
@@ -51,26 +65,26 @@ router.post('/add', (req, res, next) => {
         res.redirect('/books');
       }
     });
-
 });
 
-// GET the Book Details page in order to edit an existing Book
-router.get('/:id', (req, res, next) => {
-try {
+// GET the Game Details page in order to edit a new Game
+router.get('/:id', requireAuth, (req, res, next) => {
+
+    try {
       // get a reference to the id from the url
       let id = mongoose.Types.ObjectId.createFromHexString(req.params.id);
 
-        // find one book by its id
-      book.findById(id, (err, books) => {
+        // find one game by its id
+      game.findById(id, (err, games) => {
         if(err) {
           console.log(err);
           res.end(error);
         } else {
-          // show the book details view
+          // show the game details view
           res.render('books/details', {
               title: 'Book Details',
               books: books,
-              
+              displayName: req.user ? req.user.displayName : ''
           });
         }
       });
@@ -81,8 +95,8 @@ try {
 });
 
 // POST - process the information passed from the details form and update the document
-router.post('/:id', (req, res, next) => {
-
+router.post('/:id', requireAuth, (req, res, next) => {
+  // get a reference to the id from the url
     let id = req.params.id;
 
      let updatedBook = book({
@@ -93,7 +107,8 @@ router.post('/:id', (req, res, next) => {
       "Genre": req.body.genre
     });
 
-    book.update({_id: id}, updatedBook, (err) => {
+
+     book.update({_id: id}, updatedBook, (err) => {
       if(err) {
         console.log(err);
         res.end(err);
@@ -106,11 +121,11 @@ router.post('/:id', (req, res, next) => {
 });
 
 // GET - process the delete by user id
-router.get('/delete/:id', (req, res, next) => {
-
+router.get('/delete/:id', requireAuth, (req, res, next) => {
+  // get a reference to the id from the url
     let id = req.params.id;
 
-    book.remove({_id: id}, (err) => {
+    game.remove({_id: id}, (err) => {
       if(err) {
         console.log(err);
         res.end(err);
